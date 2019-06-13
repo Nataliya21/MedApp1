@@ -1,20 +1,20 @@
-package com.example.medapp;
+package com.example.pict;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class Pict extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_pict);
     }
 
-    public void Refresh(View view) {
+    public void Add(View view) {
     }
 
-    public void Start(View view) {
+    public void Next(View view) {
     }
 }
