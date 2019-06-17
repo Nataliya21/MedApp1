@@ -1,1 +1,1 @@
-include ':app', ':var', ':list', ':pict'
+include ':app', ':var', ':list', ':pict', ':check'

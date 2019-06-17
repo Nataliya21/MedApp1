@@ -6,6 +6,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    private View view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -13,8 +15,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Refresh(View view) {
+        this.view = view;
     }
 
     public void Start(View view) {
+        this.view = view;
     }
 }

@@ -1,17 +1,17 @@
-package com.example.var;
+package com.example.check;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class var extends AppCompatActivity {
+public class check extends AppCompatActivity {
 
     private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_var);
+        setContentView(R.layout.activity_check);
     }
 
     public void Next(View view) {
