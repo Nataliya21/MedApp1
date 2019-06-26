@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MedApp</string>
+    <string name="title_activity_list">list</string>
+    <string name="title_activity_var">var</string>
 </resources>
