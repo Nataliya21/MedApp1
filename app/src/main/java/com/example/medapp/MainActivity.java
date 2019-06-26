@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private View.OnClickListener Refresh(main main) throws Exception {
+    private View.OnClickListener Refresh(MainActivity mainActivity) throws Exception {
         String baseUrl = "http://localhost:49214";
 
         ArrayList<PollData> polls = PollInitializer.GetPollsData(baseUrl);
@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
         return null;
     }
-
-
 
     public void Start(View view) {
         ///this.view = view;
