@@ -26,7 +26,7 @@ public class PollInitializer {
 
             HttpResponse response = httpClient.execute(request);
 
-            JSONObject resp = new JSONObject(EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8")));
+            JSONObject resp = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
 
             switch (response.getStatusLine().getStatusCode()){
                 case 200:
@@ -60,7 +60,7 @@ public class PollInitializer {
 
             HttpResponse response = httpClient.execute(request);
 
-            JSONObject resp = new JSONObject(EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8")));
+            JSONObject resp = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
 
             switch (response.getStatusLine().getStatusCode()){
                 case 200:
@@ -89,7 +89,7 @@ public class PollInitializer {
 
         }
         catch (Exception ex) {
-            throw new Exception("Ошибка выполнения запроса");
+            throw ex;
         }
 
         return result;
@@ -131,12 +131,12 @@ public class PollInitializer {
 
             jsonParams.put("answers", answersObj);
 
-            StringEntity params = new StringEntity(jsonParams.toString(), ContentType.APPLICATION_JSON);
+            StringEntity params = new StringEntity(jsonParams.toString());
             request.setEntity(params);
 
             HttpResponse response = httpClient.execute(request);
             JSONObject resp = null;
-            resp = new JSONObject(EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8")));
+            resp = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
 
 
             switch (response.getStatusLine().getStatusCode()){

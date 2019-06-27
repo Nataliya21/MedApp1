@@ -17,23 +17,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         refresh = (Button) findViewById(R.id.Ref);
-        try {
-            refresh.setOnClickListener(Refresh(this));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        refresh.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Refresh();
+            }
+        });
+
 
     }
 
-    private View.OnClickListener Refresh(MainActivity mainActivity) throws Exception {
-        String baseUrl = "http://localhost:49214";
+    private void Refresh() {
 
-        ArrayList<PollData> polls = PollInitializer.GetPollsData(baseUrl);
-        Poll poll = PollInitializer.GetPOll(baseUrl, polls.get(0).id);
+        Thread thread = new Thread(new Runnable() {
 
-        ArrayList<QuestionAnswer> answers = new ArrayList<>();
+            @Override
+            public void run() {
+                try  {
+                    String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
+                    ArrayList<PollData> polls = PollInitializer.GetPollsData(baseUrl);
 
-        return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
 
     public void Start(View view) {
