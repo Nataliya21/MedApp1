@@ -1,4 +1,4 @@
-package com.example.medapp;
+package com.example.medapp.API.Models;
 
 public class PollReport {
     public  int uniqueNumber;

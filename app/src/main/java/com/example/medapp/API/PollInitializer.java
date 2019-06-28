@@ -1,21 +1,26 @@
-package com.example.medapp;
+package com.example.medapp.API;
+
+import com.example.medapp.API.Models.Option;
+import com.example.medapp.API.Models.Poll;
+import com.example.medapp.API.Models.PollData;
+import com.example.medapp.API.Models.PollReport;
+import com.example.medapp.API.Models.Question;
+import com.example.medapp.API.Models.QuestionAnswer;
+import com.example.medapp.API.Models.Section;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class PollInitializer {
-    public  static  Poll GetPOll(String baseUrl, String pollId) throws Exception{
+    public  static Poll GetPOll(String baseUrl, String pollId) throws Exception{
 
         Poll result = new Poll();
         HttpClient httpClient = HttpClientBuilder.create().build();
@@ -94,7 +99,7 @@ public class PollInitializer {
 
         return result;
     }
-    public  static  PollReport SubmitResponse(String baseUrl, String pollId, QuestionAnswer[] answers, String gender, int birthYear, int birthMonth, int birhtDay ) throws  Exception{
+    public  static PollReport SubmitResponse(String baseUrl, String pollId, QuestionAnswer[] answers, String gender, int birthYear, int birthMonth, int birhtDay ) throws  Exception{
         PollReport result = new PollReport();
 
         HttpClient httpClient = HttpClientBuilder.create().build();
