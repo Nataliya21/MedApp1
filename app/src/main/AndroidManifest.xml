@@ -15,10 +15,6 @@
             android:name=".var"
             android:label="@string/title_activity_var"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".list"
-            android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

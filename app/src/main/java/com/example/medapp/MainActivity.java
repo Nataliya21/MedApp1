@@ -5,7 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 
 import com.example.medapp.API.Models.PollData;
 import com.example.medapp.API.PollInitializer;
@@ -14,11 +19,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView list;
     private Button refresh;
+    private ScrollView sv;
+    private RadioGroup rg;
 
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> arrayList;
     private ArrayList<PollData> polls;
 
     @Override
@@ -28,17 +32,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         refresh = findViewById(R.id.Ref);
-        list = findViewById(R.id.PollsList);
-        arrayList = new ArrayList<String>();
+        sv = findViewById((R.id.sv));
+        rg = findViewById(R.id.rg);
 
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arrayList);
         refresh.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Refresh();
             }
         });
 
-        list.setAdapter(adapter);
     }
 
     private void Refresh() {
@@ -63,15 +65,14 @@ public class MainActivity extends AppCompatActivity {
             thread.join();
 
             for(PollData poll: polls){
-                arrayList.add(poll.name);
-                adapter.notifyDataSetChanged();
+                RadioButton c = new RadioButton(this);
+                c.setText(poll.name);
+                c.setTag(poll.id);
+                rg.addView(c);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
 
-    public void Start(View view) {
-        ///this.view = view;
     }
-}
+ }
