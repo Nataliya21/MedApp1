@@ -1,5 +1,6 @@
 package com.example.medapp;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.example.medapp.API.Models.PollData;
 import com.example.medapp.API.PollInitializer;
 
 import java.util.ArrayList;
+
+import static com.example.medapp.BD.WriteToDb;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     private void Refresh() {
@@ -64,15 +69,19 @@ public class MainActivity extends AppCompatActivity {
         try{
             thread.join();
 
+            sv.refreshDrawableState();
+
             for(PollData poll: polls){
                 RadioButton c = new RadioButton(this);
                 c.setText(poll.name);
                 c.setTag(poll.id);
                 rg.addView(c);
+                WriteToDb(poll, this);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+
 
     }
  }
