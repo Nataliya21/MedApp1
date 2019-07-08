@@ -1,6 +1,7 @@
 package com.example.medapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,18 +14,21 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 
+import com.example.medapp.API.Models.Poll;
 import com.example.medapp.API.Models.PollData;
 import com.example.medapp.API.PollInitializer;
 
 import java.util.ArrayList;
 
-import static com.example.medapp.BD.WriteToDb;
+import static com.example.medapp.BD.WriteToDbPoll;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button refresh;
+    private Button start;
     private ScrollView sv;
     private RadioGroup rg;
+    String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
 
     private ArrayList<PollData> polls;
 
@@ -35,17 +39,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         refresh = findViewById(R.id.Ref);
+        start = findViewById(R.id.Start);
         sv = findViewById((R.id.sv));
         rg = findViewById(R.id.rg);
 
+        sv.refreshDrawableState();
+        rg.refreshDrawableState();
         refresh.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Refresh();
             }
         });
-
-
-
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Start();
+            }
+        });
     }
 
     private void Refresh() {
@@ -55,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try  {
-                    String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
+
                     polls = PollInitializer.GetPollsData(baseUrl);
 
                 } catch (Exception e) {
@@ -69,19 +79,37 @@ public class MainActivity extends AppCompatActivity {
         try{
             thread.join();
 
-            sv.refreshDrawableState();
-
             for(PollData poll: polls){
+                int i =1;
                 RadioButton c = new RadioButton(this);
                 c.setText(poll.name);
                 c.setTag(poll.id);
+                c.setId(i);
                 rg.addView(c);
-                WriteToDb(poll, this);
+                i++;
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+
+    private void Start(){
+        //передать в бд вопросы и состояния вопросов
+        String id = "";
+        int d = rg.getCheckedRadioButtonId();
+        RadioButton ch =  findViewById(d);
+        id = ch.getTag().toString();
+
+        try {
+            WriteToDbPoll(baseUrl, id, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //узнать тип вопроса
+        Intent intent = new Intent(this, var.class);
+        startActivity(intent);
 
     }
  }
