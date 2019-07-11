@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //узнать тип вопроса
+
+
         Intent intent = new Intent(this, var.class);
         startActivity(intent);
 

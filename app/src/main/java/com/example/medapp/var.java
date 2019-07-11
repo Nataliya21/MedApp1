@@ -21,6 +21,7 @@ public class var extends AppCompatActivity {
     private ScrollView sv;
     private TextView sect;
     private Button next;
+    private  Button foto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +31,10 @@ public class var extends AppCompatActivity {
         qst = (TextView) findViewById(R.id.Qst);
         sect = (TextView) findViewById(R.id.SectId);
         sv = (ScrollView) findViewById(R.id.sv);
+        foto = (Button) findViewById(R.id.foto);
 
         //показ вопроса
-        Fill(qst, sect, sv, this);
+        Fill(qst, sect, sv, this, foto );
 
         //обработка выбора
 
@@ -44,11 +46,22 @@ public class var extends AppCompatActivity {
                 Next();
             }
         });
+        foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Foto();
+            }
+        });
 
     }
 
     private void  Next(){
         //переход к другому вопросу
+
+    }
+
+    private void Foto(){
+        //открыть камеру и передать фото в imageView
 
     }
 
