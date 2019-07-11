@@ -141,12 +141,21 @@ public class ActivitiesController {
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash2 = Db.openOrCreateHash("SectionIndex");
-        hash2.flush();
-        hash2.put("SectionIndex", newSectionIndex);
-
         WaspHash hash3 = Db.openOrCreateHash("QuestionIndex");
+
         hash3.flush();
-        hash3.put("QuestionIndex", newQuestionIndex);
+        hash2.flush();
+
+        // если небыло еще ответов, то эта функция вызвана в первый раз
+        // не надо менять индексы
+        if (GetWrittenAnswers(context).isEmpty()){
+            hash2.put("SectionIndex", curSectionIndex);
+            hash3.put("QuestionIndex", curQuestionIndex);
+        } else {
+            hash2.put("SectionIndex", newSectionIndex);
+            hash3.put("QuestionIndex", newQuestionIndex);
+        }
+
     }
 
     private static Boolean NeedToSkipNextQuestion(Context context){
