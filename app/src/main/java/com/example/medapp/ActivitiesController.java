@@ -27,16 +27,34 @@ public class ActivitiesController {
     // Назначаем на кнопку "Следующий вопрос"
     public static void NextQuestion(Context context){
 
+        Poll poll = GetPoll(context);
+
+        // получаем текущие индексы
+        int sectionIndex = GetSectionIndex(context);
+        int questionIndex = GetQuestionIndex(context);
+
         // Вызываем функцию AddAnnswer с нужными параметрами
+
+        if (NeedToSkipNextQuestion(context)){
+            // Добовляем пустой ответ
+            AddAnswer(
+                poll.sections[sectionIndex].questions[questionIndex].id,
+                "",
+                new String[]{},
+                context
+            );
+        }
+        else {
+            // Добовляем нужный ответ
+            // AddAnswer(poll.sections[sectionIndex].questions[questionIndex].id, . . . );
+        }
 
         // Вызываем функцию изменения индексов
         ResolveIndexes(context);
 
         // Получаем измененные индексы
-        int sectionIndex = GetSectionIndex(context);
-        int questionIndex = GetQuestionIndex(context);
-
-        Poll poll = GetPoll(context);
+        sectionIndex = GetSectionIndex(context);
+        questionIndex = GetQuestionIndex(context);
 
         if (sectionIndex == -1 && questionIndex == -1){
             //переходим на финальный экран
