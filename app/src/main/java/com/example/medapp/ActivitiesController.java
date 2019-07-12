@@ -33,21 +33,8 @@ public class ActivitiesController {
         int sectionIndex = GetSectionIndex(context);
         int questionIndex = GetQuestionIndex(context);
 
-        // Вызываем функцию AddAnnswer с нужными параметрами
-
-        if (NeedToSkipNextQuestion(context)){
-            // Добовляем пустой ответ
-            AddAnswer(
-                poll.sections[sectionIndex].questions[questionIndex].id,
-                "",
-                new String[]{},
-                context
-            );
-        }
-        else {
-            // Добовляем нужный ответ
-            // AddAnswer(poll.sections[sectionIndex].questions[questionIndex].id, . . . );
-        }
+        // Добовляем нужный ответ
+        // AddAnswer(poll.sections[sectionIndex].questions[questionIndex].id, . . . );
 
         // Вызываем функцию изменения индексов
         ResolveIndexes(context);
@@ -142,6 +129,14 @@ public class ActivitiesController {
         if (curQuestionIndex == questionInSectionLength - 1){
             newQuestionIndex = 0;
         } else if (NeedToSkipNextQuestion(context)){
+            // добавляем пустой ответ
+            AddAnswer(
+                poll.sections[curSectionIndex].questions[curQuestionIndex + 1].id,
+                "",
+                new String[]{},
+                context
+            );
+
             newQuestionIndex = curQuestionIndex + 2;
         } else{
             newQuestionIndex = curQuestionIndex + 1;
@@ -190,8 +185,8 @@ public class ActivitiesController {
 
         for(QuestionAnswer answer : GetWrittenAnswers(context)){
             if (answer.questionId == showAfterQuestionId){
-                //первая из маассива а не весь массив, т.к. нельзя выбрать
-                //несколько ответов в вопросе showAfter
+                // первая из маассива а не весь массив, т.к. нельзя выбрать
+                // несколько ответов в вопросе showAfter
                 selectedOptionId = answer.selectedOptions[0];
                 break;
             }
@@ -204,13 +199,14 @@ public class ActivitiesController {
                 for(Option option : question.options){
                     if (option.id == selectedOptionId){
                         optionScore = option.score;
+                        break;
                     }
                 }
                 break;
             }
         }
 
-        return showAfterScore == optionScore;
+        return showAfterScore != optionScore;
     }
 
     private static void AddAnswer(String questionId, String attachment, String [] selectedOptions, Context context){
