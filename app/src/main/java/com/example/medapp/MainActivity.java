@@ -20,7 +20,7 @@ import com.example.medapp.API.PollInitializer;
 
 import java.util.ArrayList;
 
-import static com.example.medapp.BD.WriteToDbPoll;
+import static com.example.medapp.ActivitiesController.Init;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     private void Start(){
@@ -102,16 +101,12 @@ public class MainActivity extends AppCompatActivity {
         id = ch.getTag().toString();
 
         try {
-            WriteToDbPoll(baseUrl, id, this);
+            Init(id, baseUrl,this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //узнать тип вопроса
-
-
         Intent intent = new Intent(this, var.class);
         startActivity(intent);
-
     }
  }

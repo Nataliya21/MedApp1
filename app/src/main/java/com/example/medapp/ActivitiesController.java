@@ -1,6 +1,17 @@
 package com.example.medapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Base64;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.example.medapp.API.Models.Option;
 import com.example.medapp.API.Models.Poll;
@@ -12,6 +23,7 @@ import net.rehacktive.waspdb.WaspDb;
 import net.rehacktive.waspdb.WaspFactory;
 import net.rehacktive.waspdb.WaspHash;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -25,7 +37,7 @@ public class ActivitiesController {
     }
 
     // Назначаем на кнопку "Следующий вопрос"
-    public static void NextQuestion(Context context){
+    public static void NextQuestion(Context context, String [] options, String atachment){
 
         Poll poll = GetPoll(context);
 
@@ -34,7 +46,7 @@ public class ActivitiesController {
         int questionIndex = GetQuestionIndex(context);
 
         // Добовляем нужный ответ
-        // AddAnswer(poll.sections[sectionIndex].questions[questionIndex].id, . . . );
+         AddAnswer(poll.sections[sectionIndex].questions[questionIndex].id, atachment,options, context );
 
         // Вызываем функцию изменения индексов
         ResolveIndexes(context);
@@ -48,21 +60,63 @@ public class ActivitiesController {
             return;
         }
 
-        //рендерим вопрос
-        if (poll.sections[sectionIndex].questions[questionIndex].multipleChoice){
-            FillCheckBoxes();
-        }
-        else {
-            FillRadios();
+    }
+
+    public static void FillActivity(TextView quest, TextView Sect, ScrollView sv, Context context, Button foto, ImageView image)
+    {
+        Poll poll = GetPoll(context);
+
+        int sectionIndex = GetSectionIndex(context);
+        int questionIndex = GetQuestionIndex(context);
+
+        if(poll.sections[sectionIndex].questions[questionIndex].allowAtachments)
+            FotoButton(foto, image, poll.sections[sectionIndex].questions[questionIndex].allowAtachments);
+
+
+        quest.setText(poll.sections[sectionIndex].questions[questionIndex].text);
+        Sect.setText(poll.sections[sectionIndex].name);
+
+        if(poll.sections[sectionIndex].questions[questionIndex].multipleChoice)
+            FillCheckBoxes(poll.sections[sectionIndex].questions[questionIndex].options,sv);
+        else
+            FillRadios(poll.sections[sectionIndex].questions[questionIndex].options, sv);
+    }
+
+    private static void FillRadios(Option[] options, ScrollView sv){
+        RadioGroup rg = new RadioGroup(sv.getContext());
+        rg.setId(R.id.radio);
+        sv.addView(rg);
+
+        for(int i = 0; i < options.length; i++)
+        {
+            RadioButton rb = new RadioButton(rg.getContext());
+            rb.setText(options[i].text);
+            rb.setTag(options[i].id);
+            rb.setId(i+1);
+            rg.addView(rb);
         }
     }
 
-    private static void FillRadios(){
+    private static void FillCheckBoxes(Option [] option, ScrollView scrollView){
+        LinearLayout ll = new LinearLayout(scrollView.getContext());
+        ll.setId(R.id.checkbox);
+        scrollView.addView(ll);
 
+        for(int i = 0; i < option.length; i++)
+        {
+            CheckBox ch = new CheckBox(ll.getContext());
+            ch.setText(option[i].text);
+            ch.setTag(option[i].id);
+            ll.addView(ch);
+        }
     }
 
-    private static void FillCheckBoxes(){
-
+    private  static  void FotoButton(Button foto,ImageView imageView, Boolean allowAtachments){
+        if(allowAtachments)
+        {
+            foto.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+        }
     }
 
     private static void WritePollToDb(String pollId, String baseUrl, Context context){
@@ -249,5 +303,17 @@ public class ActivitiesController {
         WaspHash hash = Db.openOrCreateHash("Answers");
 
         return new ArrayList<>(hash.<QuestionAnswer>getAllValues());
+    }
+
+    //конверт для картинки в base64
+    public static String ConverBase64(Bitmap bitmap){
+        String base64 = "";
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte [] byteArray = stream.toByteArray();
+        base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+
+        return base64;
     }
 }
