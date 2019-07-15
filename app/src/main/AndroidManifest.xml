@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".End"></activity>
-        <activity android:name=".pict" />
         <activity
             android:name=".var"
             android:label="@string/title_activity_var"

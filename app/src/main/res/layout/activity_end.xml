@@ -5,26 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="73dp"
-        android:background="@color/colorAccent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/End"
-        android:layout_width="385dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="351dp"
+        android:layout_height="115dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text='   Поздравляем! Вы успешно прошли тестирование! Отправьте результаты вашей проверки на сервер, для того чтобы врач ознакомился с ними. Для этого нажмите кнопку "Отправить результаты".'
+        android:textColor="@android:color/widget_edittext_dark"
         android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal"
@@ -33,8 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.009" />
 
     <Button
         android:id="@+id/Send"
@@ -49,31 +41,33 @@
         android:background="@color/colorAccent"
         android:text="Отправить результаты"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/End"
-        app:layout_constraintVertical_bias="0.094" />
+        app:layout_constraintTop_toBottomOf="@+id/End" />
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="382dp"
-        android:layout_height="117dp"
+        android:layout_width="355dp"
+        android:layout_height="112dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="260dp"
         android:text='   Поделитесь своим результатоммв смс или в других социальных сетях, нажав кнопку "Поделиться". Нажав кнопку "Завершить", вы переидете на начальный экран.'
+        android:textColor="@android:color/widget_edittext_dark"
         android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal"
         app:fontFamily="@font/yrsa_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Send"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
@@ -92,7 +86,7 @@
         android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.635"
+        app:layout_constraintHorizontal_bias="0.797"
         app:layout_constraintStart_toEndOf="@+id/Share"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.497" />

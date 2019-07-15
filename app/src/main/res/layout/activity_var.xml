@@ -17,6 +17,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="   Здесь будет находиться вопрос с выбором ответа."
+        android:textColor="@android:color/widget_edittext_dark"
         android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal"
@@ -75,6 +76,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="        Здесь будет находиться название секции"
+        android:textColor="@android:color/widget_edittext_dark"
         android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal"
@@ -88,6 +90,7 @@
 
     <Button
         android:id="@+id/foto"
+        style="@style/AppTheme"
         android:layout_width="160dp"
         android:layout_height="62dp"
         android:layout_marginStart="16dp"
@@ -98,6 +101,7 @@
         android:layout_marginBottom="8dp"
         android:background="@color/colorAccent"
         android:text="Добавить фото"
+        android:textColor="@color/ic_launcher_background"
         android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal"
@@ -111,7 +115,7 @@
     <ImageView
         android:id="@+id/Foto"
         android:layout_width="345dp"
-        android:layout_height="134dp"
+        android:layout_height="162dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"

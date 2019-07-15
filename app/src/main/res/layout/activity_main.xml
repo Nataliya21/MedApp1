@@ -5,88 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/Ref"
-        android:layout_width="172dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/colorAccent"
-        android:text="Обновить"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        android:typeface="normal"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.964"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.027" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="376dp"
-        android:layout_height="77dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text='   Приветствуем вас! Для прохождения опросов необходимо обновить тесты, нажав кнопку "Обновить".'
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        app:fontFamily="@font/yrsa_light"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.727"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.012" />
-
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="376dp"
-        android:layout_height="86dp"
+        android:layout_width="386dp"
+        android:layout_height="87dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="80dp"
         android:text="   Постарайтесь отчвеать на вопросы честно. Это поможет провести более точный анализ вашей ситуации."
+        android:textColor="@android:color/widget_edittext_dark"
         android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal"
         app:fontFamily="@font/yrsa_light"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.727"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.016" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/sv"
-        android:layout_width="390dp"
-        android:layout_height="240dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="353dp"
+        android:layout_height="313dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.226">
 
         <RadioGroup
             android:id="@+id/rg"
@@ -108,9 +54,9 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.968"
+        app:layout_constraintHorizontal_bias="0.892"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv"
-        app:layout_constraintVertical_bias="0.423" />
+        app:layout_constraintVertical_bias="0.601" />
 
 </android.support.constraint.ConstraintLayout>

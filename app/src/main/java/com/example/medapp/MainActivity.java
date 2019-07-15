@@ -24,7 +24,6 @@ import static com.example.medapp.ActivitiesController.Init;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button refresh;
     private Button start;
     private ScrollView sv;
     private RadioGroup rg;
@@ -38,18 +37,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        refresh = findViewById(R.id.Ref);
         start = findViewById(R.id.Start);
         sv = findViewById((R.id.sv));
         rg = findViewById(R.id.rg);
 
         sv.refreshDrawableState();
         rg.refreshDrawableState();
-        refresh.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Refresh();
-            }
-        });
+        Refresh();
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
