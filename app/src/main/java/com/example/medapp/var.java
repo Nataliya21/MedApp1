@@ -104,7 +104,6 @@ public class var extends AppCompatActivity {
 
             if(count[0] ==0)
             {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(var.this);
                 builder.setTitle("Внимание!")
                         .setMessage("Вы не выбрали ни одного варианта ответа!")
@@ -114,18 +113,11 @@ public class var extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
-                            count[0] = 1;
-                            mas[0].setChecked(true);
-                    }
-                });
-                builder.setPositiveButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                            onPause();
                     }
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
+                return;
 
             }
             String[] options = new String[count[0]];
@@ -157,19 +149,11 @@ public class var extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
-                                            Id[0] =1;
-                                            RadioButton rb = findViewById(Id[0]);
-                                            rb.setChecked(true);
                                         }
                                     });
-                    builder.setPositiveButton("Отмена", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            onPause();
-                        }
-                    });
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
+                    return;
 
                 }
                 RadioButton rb = findViewById(Id[0]);
@@ -205,7 +189,7 @@ public class var extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         BackToMain();
     }
 
