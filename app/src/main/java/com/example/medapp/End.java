@@ -1,5 +1,7 @@
 package com.example.medapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,5 +29,38 @@ public class End extends AppCompatActivity {
                 startActivity(Intent.createChooser(shareIntend, "Поделиться"));
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        BackToMain();
+    }
+
+    private void BackToMain(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(End.this);
+        builder.setTitle("Вернуться к начальному экрану???")
+                .setMessage("Усли вы продолжите, то весь прогресс будет утерян безвозвратно. Хотите продолжить?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Продолжить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent main = new Intent(End.this, MainActivity.class);
+                startActivity(main);
+                //метод обнуления индексов
+            }
+        });
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                onPause();
+            }
+        });
+        AlertDialog main = builder.create();
+        main.show();
+
     }
 }

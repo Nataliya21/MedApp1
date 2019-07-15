@@ -25,13 +25,18 @@ import net.rehacktive.waspdb.WaspFactory;
 import net.rehacktive.waspdb.WaspHash;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ActivitiesController {
 
     // Обязательно вызываем перед тем как начать работать
     public static void Init(String pollId, String baseUrl, Context context){
+
+        WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
+        WaspHash hash = Db.openOrCreateHash("Answers");
+
+        hash.flush();
 
         WritePollToDb(pollId, baseUrl, context);
         InitializeIndexes(context);
@@ -60,6 +65,10 @@ public class ActivitiesController {
 
         System.out.println("Смена индексов");
         System.out.println("Секция №" + sectionIndex + "\r\nВопрос №" + questionIndex);
+
+        if (NeedToSkipThisQuestion(context)){
+            NextQuestion(context, new String[]{}, "");
+        }
 
         if (sectionIndex == -1 && questionIndex == -1){
             //переходим на финальный экран
@@ -192,16 +201,6 @@ public class ActivitiesController {
 
         if (curQuestionIndex == questionInSectionLength - 1){
             newQuestionIndex = 0;
-        } else if (NeedToSkipNextQuestion(context)){
-            // добавляем пустой ответ
-            AddAnswer(
-                poll.sections[curSectionIndex].questions[curQuestionIndex + 1].id,
-                "",
-                new String[]{},
-                context
-            );
-
-            newQuestionIndex = curQuestionIndex + 2;
         } else{
             newQuestionIndex = curQuestionIndex + 1;
         }
@@ -235,20 +234,29 @@ public class ActivitiesController {
 
     }
 
-    private static Boolean NeedToSkipNextQuestion(Context context){
+    private static Boolean NeedToSkipThisQuestion(Context context){
 
-        Question nextQuestion = GetPoll(context).sections[GetSectionIndex(context)].questions[GetQuestionIndex(context) + 1];
+        if (GetSectionIndex(context) == -1 || GetQuestionIndex(context) == -1)
+            return false;
 
-        if (!nextQuestion.showAfter){
+        if (GetPoll(context).sections.length <= GetSectionIndex(context))
+            return false;
+
+        if (GetPoll(context).sections[GetSectionIndex(context)].questions.length <= GetQuestionIndex(context))
+            return false;
+
+        Question curQuestion = GetPoll(context).sections[GetSectionIndex(context)].questions[GetQuestionIndex(context)];
+
+        if (!curQuestion.showAfter){
             return false;
         }
 
-        int showAfterScore = nextQuestion.afterQuestionScore;
-        String showAfterQuestionId = nextQuestion.showAfterQuestion;
+        int showAfterScore = curQuestion.afterQuestionScore;
+        String showAfterQuestionId = curQuestion.showAfterQuestion;
         String selectedOptionId = "";
 
         for(QuestionAnswer answer : GetWrittenAnswers(context)){
-            if (answer.questionId == showAfterQuestionId){
+            if (answer.questionId.compareTo(showAfterQuestionId) == 0){
                 // первая из маассива а не весь массив, т.к. нельзя выбрать
                 // несколько ответов в вопросе showAfter
                 selectedOptionId = answer.selectedOptions[0];
@@ -259,9 +267,9 @@ public class ActivitiesController {
         int optionScore = -1;
 
         for (Question question : GetPoll(context).sections[GetSectionIndex(context)].questions){
-            if (question.id == showAfterQuestionId){
+            if (question.id.compareTo(showAfterQuestionId) == 0){
                 for(Option option : question.options){
-                    if (option.id == selectedOptionId){
+                    if (option.id.compareTo(selectedOptionId) == 0){
                         optionScore = option.score;
                         break;
                     }
@@ -283,8 +291,7 @@ public class ActivitiesController {
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("Answers");
 
-        hash.put("Answer", answer);
-
+        hash.put(questionId, answer);
     }
 
     private static Poll GetPoll(Context context){
