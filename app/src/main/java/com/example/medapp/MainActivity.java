@@ -78,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
 
         try{
             thread.join();
+            int i =1;
 
             for(PollData poll: polls){
-                int i =1;
                 RadioButton c = new RadioButton(this);
                 c.setText(poll.name);
                 c.setTag(poll.id);

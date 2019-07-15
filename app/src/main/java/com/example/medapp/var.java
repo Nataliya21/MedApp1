@@ -70,7 +70,7 @@ public class var extends AppCompatActivity {
 
         String base = "";
 
-        if(image.getVisibility()==View.VISIBLE)
+        if(image.getVisibility()==View.VISIBLE && image.getDrawable() != null)
         {
             String [] option = new String[1];
             option[0] = "";
@@ -85,7 +85,7 @@ public class var extends AppCompatActivity {
         if(viewGroup.getId()==R.id.checkbox) {
             //check
             LinearLayout ll = (LinearLayout) viewGroup;
-            CheckBox[] mas = new CheckBox[ll.getChildCount() + 1];
+            CheckBox[] mas = new CheckBox[ll.getChildCount()];
             int count = 0;
 
             for (int i = 0; i < mas.length; i++) {
@@ -122,9 +122,9 @@ public class var extends AppCompatActivity {
                     NextQuestion(this, opt,base);
         }
 
-        Intent intent = getIntent();
-             finish();
-             startActivity(intent);
+        //Intent intent = getIntent();
+        //    finish();
+        //    startActivity(intent);
     }
 
     private void Foto(){

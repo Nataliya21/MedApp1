@@ -1,6 +1,7 @@
 package com.example.medapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Base64;
 import android.view.View;
@@ -45,6 +46,8 @@ public class ActivitiesController {
         int sectionIndex = GetSectionIndex(context);
         int questionIndex = GetQuestionIndex(context);
 
+        System.out.println("Секция №" + sectionIndex + "\r\nВопрос №" + questionIndex);
+
         // Добовляем нужный ответ
          AddAnswer(poll.sections[sectionIndex].questions[questionIndex].id, atachment,options, context );
 
@@ -55,11 +58,19 @@ public class ActivitiesController {
         sectionIndex = GetSectionIndex(context);
         questionIndex = GetQuestionIndex(context);
 
+        System.out.println("Смена индексов");
+        System.out.println("Секция №" + sectionIndex + "\r\nВопрос №" + questionIndex);
+
         if (sectionIndex == -1 && questionIndex == -1){
             //переходим на финальный экран
-            return;
+            System.out.println(GetPoll(context).toString());
+            Intent intent = new Intent(context, End.class);
+            context.startActivity(intent);
+        } else {
+            //переходим дальше
+            Intent intent = new Intent(context, var.class);
+            context.startActivity(intent);
         }
-
     }
 
     public static void FillActivity(TextView quest, TextView Sect, ScrollView sv, Context context, Button foto, ImageView image)
@@ -71,7 +82,6 @@ public class ActivitiesController {
 
         if(poll.sections[sectionIndex].questions[questionIndex].allowAtachments)
             FotoButton(foto, image, poll.sections[sectionIndex].questions[questionIndex].allowAtachments);
-
 
         quest.setText(poll.sections[sectionIndex].questions[questionIndex].text);
         Sect.setText(poll.sections[sectionIndex].name);
