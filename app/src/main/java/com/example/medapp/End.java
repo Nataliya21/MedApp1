@@ -29,11 +29,16 @@ public class End extends AppCompatActivity {
 
     private Button doIt;
     private Button doNot;
-    private RadioGroup rg2;
     private RadioGroup rg;
-    private DatePicker dp;
+    private Button dateB;
     private String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
     Calendar calendar = Calendar.getInstance();
+
+    final int[] y = {0};
+    final int[] ms = {-1};
+    final int[] d = {0};
+    int [] date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +46,7 @@ public class End extends AppCompatActivity {
         doNot = (Button) findViewById(R.id.EndB);
         doIt = (Button) findViewById(R.id.Send);
         rg = (RadioGroup) findViewById(R.id.radioGroup);
-        rg2 = (RadioGroup) findViewById(R.id.rg2);
+        dateB = (Button) findViewById(R.id.date);
 
         RadioButton m = new RadioButton(rg.getContext());
         m.setText("Мужской");
@@ -53,11 +58,6 @@ public class End extends AppCompatActivity {
         f.setTag("f");
         f.setId(R.id.checkbox);
         rg.addView(f);
-
-        RadioButton date = new RadioButton(rg2.getContext());
-        date.setText("Выбрать дату рождения");
-        date.setId(R.id.text);
-        rg2.addView(date);
 
         doNot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +72,12 @@ public class End extends AppCompatActivity {
 
                 SendToSerever();
 
+            }
+        });
+        dateB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                date = DatePicker(y[0],ms[0],d[0]);
             }
         });
 
@@ -169,69 +175,68 @@ public class End extends AppCompatActivity {
         RadioButton gen = findViewById(genderId);
         gender = gen.getTag().toString();
 
-        //вызов датапикера в алерте
-        int date = -1;
-        final int[] y = {0};
-        final int[] m = {-1};
-        final int[] d = {0};
-        date = rg2.getCheckedRadioButtonId();
-        RadioButton rb =  findViewById(date);
-        if(rb.isChecked())
-        {
-            final String finalGender1 = gender;
-            DatePickerDialog dpd = new DatePickerDialog(End.this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    calendar.set(Calendar.YEAR, year);
-                    y[0] = year;
-                    calendar.set(Calendar.MONTH, month);
-                    m[0] = month;
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    d[0] = dayOfMonth;
+        final String finalGender1 = gender;
 
-                    final PollReport[] result = {null};
-                    final String[] message = {""};
-                    final String finalGender = finalGender1;
-                    Thread  thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                result[0] = SubmitResponse(baseUrl, pollId, array, finalGender, y[0],m[0]+1,d[0]);
-                            }
-                            catch(Exception e)
-                            {
-                                e.printStackTrace();
-                                message[0] = e.getMessage();
+        final PollReport[] result = {null};
+        final String[] message = {""};
+        final String finalGender = finalGender1;
 
-                            }
-                        }
-                    });
-
-                    thread.start();
-
-                    try{
-                        thread.join();
-
-                        WriteReportToDb(result[0],End.this);
-                        Intent send = new Intent (End.this, Send.class);
-                        startActivity(send);
-                    }
-                    catch(Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-
-
+        Thread  thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    result[0] = SubmitResponse(baseUrl, pollId, array, finalGender, date[0],date[1],date[2]);
+                    message[0] = result[0].message;
                 }
-            }, 1990,0,1);
-            dpd.show();
-            return;
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                    message[0] = e.getMessage();
+                }
+            }
+        });
+
+        thread.start();
+
+        try{
+            thread.join();
+
+            WriteReportToDb(result[0],End.this);
+            Intent send = new Intent (End.this, Send.class);
+            send.putExtra("message", message[0]);
+            startActivity(send);
         }
-
-
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
-   // private void Sender(int)
+   private int [] DatePicker(int god, int mes, int den)
+   {
+       final int[] g = {god};
+       final int[] m = { mes };
+       final int[] d = { den };
+       DatePickerDialog date = new DatePickerDialog(End.this, new DatePickerDialog.OnDateSetListener() {
+           @Override
+           public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+               calendar.set(Calendar.YEAR, year);
+               g[0] = year;
+               calendar.set(Calendar.MONTH, month);
+               m[0] = month;
+               calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+               d[0] = dayOfMonth;
+           }
+       }, 1990, 0,1);
+       date.show();
+
+       int [] data = new int[3];
+       data[0] = g[0];
+       data[1] = m[0]+1;
+       data[2] = d[0];
+
+       return data;
+   }
 
 }

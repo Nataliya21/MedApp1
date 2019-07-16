@@ -25,8 +25,11 @@ public class Send extends AppCompatActivity {
         share = (Button) findViewById(R.id.Share);
 
         String uniq = String.valueOf(GetUniqNumber(Send.this));
+        Bundle argument = getIntent().getExtras();
+        String message = argument.get("message").toString();
 
-        number.setText(uniq);
+
+        number.setText(message + "\nУникальный номер моего опроса - " + uniq);
 //
         final String num = number.getText().toString();
 
@@ -42,7 +45,7 @@ public class Send extends AppCompatActivity {
         Intent shareIntend = new Intent(Intent.ACTION_SEND);
         shareIntend.setType("text/plain");
         String shareBody = number;
-        String shareSub = "Уникальный номер вашего обращения: ";
+        String shareSub ="";
         shareIntend.putExtra(Intent.EXTRA_SUBJECT, shareSub);
         shareIntend.putExtra(Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(shareIntend, "Поделиться"));
