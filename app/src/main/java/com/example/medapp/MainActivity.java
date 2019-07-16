@@ -1,6 +1,8 @@
 package com.example.medapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -90,7 +92,27 @@ public class MainActivity extends AppCompatActivity {
     private void Start(){
         //передать в бд вопросы и состояния вопросов
         String id = "";
-        int d = rg.getCheckedRadioButtonId();
+        int d = -1;
+        d = rg.getCheckedRadioButtonId();
+        if(d==-1)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Внимание!")
+                    .setMessage("Вы не выбрали ни одного теста!")
+                    .setCancelable(false).
+                    setNegativeButton("Ок",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    onPause();
+                                }
+                            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return;
+
+        }
         RadioButton ch =  findViewById(d);
         id = ch.getTag().toString();
 
@@ -99,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
 
         Intent intent = new Intent(this, var.class);
         startActivity(intent);

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.medapp.API.Models.Option;
 import com.example.medapp.API.Models.Poll;
+import com.example.medapp.API.Models.PollReport;
 import com.example.medapp.API.Models.Question;
 import com.example.medapp.API.Models.QuestionAnswer;
 import com.example.medapp.API.PollInitializer;
@@ -26,7 +27,6 @@ import net.rehacktive.waspdb.WaspHash;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ActivitiesController {
 
@@ -314,7 +314,7 @@ public class ActivitiesController {
         return hash.get("SectionIndex");
     }
 
-    private static ArrayList<QuestionAnswer> GetWrittenAnswers(Context context){
+    public static ArrayList<QuestionAnswer> GetWrittenAnswers(Context context){
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("Answers");
@@ -322,7 +322,6 @@ public class ActivitiesController {
         return new ArrayList<>(hash.<QuestionAnswer>getAllValues());
     }
 
-    //конверт для картинки в base64
     public static String ConverBase64(Bitmap bitmap){
         String base64 = "";
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -332,5 +331,56 @@ public class ActivitiesController {
         base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
 
         return base64;
+    }
+
+    public static String GetPollId(Context context){
+        Poll poll = GetPoll(context);
+        String pollId = poll.id;
+        return pollId;
+    }
+
+    //запись и извлечение PollResponse
+    public static void WriteReportToDb (final PollReport report, Context context){
+        WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
+        WaspHash hash = Db.openOrCreateHash("PollReport");
+
+        final PollReport[] result = new PollReport[1];
+
+        Thread tr = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try
+                {
+                    result[0] = report;
+                }
+                catch( Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+        tr.start();
+
+        try {
+            tr.join();
+
+            hash.put("PollReport", result[0]);
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int GetUniqNumber(Context context){
+        WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
+        WaspHash hash = Db.openOrCreateHash("PollReport");
+
+        PollReport result = hash.get("PollReport");
+        int number;
+        number = result.uniqueNumber;
+
+        return number;
     }
 }
