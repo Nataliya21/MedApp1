@@ -24,27 +24,29 @@ public class Send extends AppCompatActivity {
         number = (TextView) findViewById(R.id.Number);
         share = (Button) findViewById(R.id.Share);
 
-        String uniq = String.valueOf(GetUniqNumber(Send.this));
+        final String uniq = String.valueOf(GetUniqNumber(Send.this));
         Bundle argument = getIntent().getExtras();
         String message = argument.get("message").toString();
+        Bundle arg  = getIntent().getExtras();
+        String header = arg.get("header").toString();
 
 
-        number.setText(message + "\nУникальный номер моего опроса - " + uniq);
+        number.setText(header +"\n" + message + "\n" + uniq);
 //
         final String num = number.getText().toString();
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Share(num);
+                Share(uniq);
             }
         });
     }
 
-    private void Share(String number){
+    private void Share(String uniq){
         Intent shareIntend = new Intent(Intent.ACTION_SEND);
         shareIntend.setType("text/plain");
-        String shareBody = number;
+        String shareBody = "Уникальный номер моего опроса - " + uniq;
         String shareSub ="";
         shareIntend.putExtra(Intent.EXTRA_SUBJECT, shareSub);
         shareIntend.putExtra(Intent.EXTRA_TEXT, shareBody);

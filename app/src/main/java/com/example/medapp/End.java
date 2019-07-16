@@ -202,6 +202,7 @@ public class End extends AppCompatActivity {
             WriteReportToDb(result[0],End.this);
             Intent send = new Intent (End.this, Send.class);
             send.putExtra("message", message[0]);
+            send.putExtra("header", result[0].header);
             startActivity(send);
         }
         catch(Exception e)
