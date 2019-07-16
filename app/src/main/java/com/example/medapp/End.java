@@ -34,10 +34,8 @@ public class End extends AppCompatActivity {
     private String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
     Calendar calendar = Calendar.getInstance();
 
-    final int[] y = {0};
-    final int[] ms = {-1};
-    final int[] d = {0};
-    int [] date;
+    int [] dateINT = new int[3];
+    int count =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +75,8 @@ public class End extends AppCompatActivity {
         dateB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                date = DatePicker(y[0],ms[0],d[0]);
+                DatePicker();
+
             }
         });
 
@@ -175,17 +174,16 @@ public class End extends AppCompatActivity {
         RadioButton gen = findViewById(genderId);
         gender = gen.getTag().toString();
 
-        final String finalGender1 = gender;
+        final String finalGender = gender;
 
         final PollReport[] result = {null};
         final String[] message = {""};
-        final String finalGender = finalGender1;
 
         Thread  thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
-                    result[0] = SubmitResponse(baseUrl, pollId, array, finalGender, date[0],date[1],date[2]);
+                    result[0] = SubmitResponse(baseUrl, pollId, array, finalGender, dateINT[0],dateINT[1],dateINT[2]);
                     message[0] = result[0].message;
                 }
                 catch(Exception e)
@@ -213,30 +211,23 @@ public class End extends AppCompatActivity {
 
     }
 
-   private int [] DatePicker(int god, int mes, int den)
+   private DatePickerDialog DatePicker()
    {
-       final int[] g = {god};
-       final int[] m = { mes };
-       final int[] d = { den };
+       //final int [] data = new int[3];
+
        DatePickerDialog date = new DatePickerDialog(End.this, new DatePickerDialog.OnDateSetListener() {
            @Override
            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                calendar.set(Calendar.YEAR, year);
-               g[0] = year;
+               dateINT[0] = year;
                calendar.set(Calendar.MONTH, month);
-               m[0] = month;
+               dateINT[1] = month + 1 ;
                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-               d[0] = dayOfMonth;
+               dateINT[2] = dayOfMonth;
            }
        }, 1990, 0,1);
        date.show();
-
-       int [] data = new int[3];
-       data[0] = g[0];
-       data[1] = m[0]+1;
-       data[2] = d[0];
-
-       return data;
+       return date;
    }
 
 }
