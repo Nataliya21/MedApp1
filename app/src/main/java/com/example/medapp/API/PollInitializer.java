@@ -13,6 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,6 +139,7 @@ public class PollInitializer {
 
             StringEntity params = new StringEntity(jsonParams.toString());
             request.setEntity(params);
+            //request.setHeader("data", jsonParams.toString());
 
             HttpResponse response = httpClient.execute(request);
             JSONObject resp = null;

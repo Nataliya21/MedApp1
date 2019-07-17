@@ -189,7 +189,22 @@ public class End extends AppCompatActivity {
                 catch(Exception e)
                 {
                     e.printStackTrace();
-                    message[0] = e.getMessage();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(End.this);
+                    builder.setTitle("Ошибка!")
+                            .setMessage("Не удалось установить соединение с сервером!")
+                            .setCancelable(false).
+                            setNegativeButton("Ок",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            onPause();
+                                        }
+                                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    return;
+                    //message[0] = e.getMessage();
                 }
             }
         });
@@ -208,6 +223,21 @@ public class End extends AppCompatActivity {
         catch(Exception e)
         {
             e.printStackTrace();
+            AlertDialog.Builder builder = new AlertDialog.Builder(End.this);
+            builder.setTitle("Ошибка!")
+                    .setMessage("Не удалось установить соединение с сервером!")
+                    .setCancelable(false).
+                    setNegativeButton("Ок",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    onPause();
+                                }
+                            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return;
         }
 
     }

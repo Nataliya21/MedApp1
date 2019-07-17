@@ -21,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 import static com.example.medapp.ActivitiesController.ConverBase64;
@@ -77,21 +78,53 @@ public class var extends AppCompatActivity {
         ViewGroup viewGroup = (ViewGroup) sv.getChildAt(0);
 
         String base = "";
+        ArrayList<String> options = new ArrayList<>();
 
         if(image.getVisibility()==View.VISIBLE && image.getDrawable() != null)
         {
-            String [] option = new String[1];
-            option[0] = "";
-
             BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
             Bitmap bmp = drawable.getBitmap();
-
             base = ConverBase64(bmp);
 
-            NextQuestion(this, option, base);
         }
-        if(viewGroup.getId()==R.id.checkbox) {
-            //check
+
+        if (viewGroup.getId() == R.id.checkbox){
+            LinearLayout ll = (LinearLayout) viewGroup;
+
+            for(int i = 0; i < ll.getChildCount(); i++){
+                if ( ((CheckBox)ll.getChildAt(i)).isChecked() ){
+                    options.add(ll.getChildAt(i).getTag().toString());
+                }
+            }
+        } else if ( viewGroup.getId()==R.id.radio ){
+            RadioGroup rg = (RadioGroup) viewGroup;
+
+            RadioButton rb = findViewById(rg.getCheckedRadioButtonId());
+            options.add(rb.getTag().toString());
+
+        }
+
+        if (options.size() == 0){
+            AlertDialog.Builder builder = new AlertDialog.Builder(var.this);
+            builder.setTitle("Внимание!")
+                    .setMessage("Вы не выбрали ни одного варианта ответа!")
+                    .setCancelable(false).
+                    setNegativeButton("Ок",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return;
+        }
+
+        NextQuestion(this, options.toArray(new String[options.size()]), base);
+
+        /*if(viewGroup.getId()==R.id.checkbox) {
+
             LinearLayout ll = (LinearLayout) viewGroup;
             final CheckBox[] mas = new CheckBox[ll.getChildCount()];
             final int[] count = {0};
@@ -122,8 +155,10 @@ public class var extends AppCompatActivity {
             }
             String[] options = new String[count[0]];
 
+            int j = 0;
+
             for (int i = 0; i < mas.length; i++) {
-                int j = 0;
+
                 if (mas[i].isChecked()) {
                     options[j] = mas[i].getTag().toString();
                     j++;
@@ -165,7 +200,7 @@ public class var extends AppCompatActivity {
                     String [] opt = new String[1];
                     opt[0] = "";
                     NextQuestion(this, opt,base);
-        }
+        }*/
 
     }
 

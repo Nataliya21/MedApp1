@@ -34,9 +34,13 @@ public class ActivitiesController {
     public static void Init(String pollId, String baseUrl, Context context){
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
-        WaspHash hash = Db.openOrCreateHash("Answers");
 
-        hash.flush();
+        for (String h : Db.getAllHashes()){
+            WaspHash hash = Db.openOrCreateHash(h);
+            hash.flush();
+        }
+
+        //WaspFactory.destroyDatabase(Db);
 
         WritePollToDb(pollId, baseUrl, context);
         InitializeIndexes(context);
@@ -68,6 +72,7 @@ public class ActivitiesController {
 
         if (NeedToSkipThisQuestion(context)){
             NextQuestion(context, new String[]{}, "");
+            return;
         }
 
         if (sectionIndex == -1 && questionIndex == -1){
@@ -259,8 +264,10 @@ public class ActivitiesController {
             if (answer.questionId.compareTo(showAfterQuestionId) == 0){
                 // первая из маассива а не весь массив, т.к. нельзя выбрать
                 // несколько ответов в вопросе showAfter
-                selectedOptionId = answer.selectedOptions[0];
-                break;
+                if (answer.selectedOptions.length > 0){
+                    selectedOptionId = answer.selectedOptions[0];
+                    break;
+                }
             }
         }
 
@@ -281,7 +288,7 @@ public class ActivitiesController {
         return showAfterScore != optionScore;
     }
 
-    private static void AddAnswer(String questionId, String attachment, String [] selectedOptions, Context context){
+    private static void AddAnswer(final String questionId, final String attachment, final String [] selectedOptions, final Context context){
 
         QuestionAnswer answer = new QuestionAnswer();
         answer.questionId = questionId;
