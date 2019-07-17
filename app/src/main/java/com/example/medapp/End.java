@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -17,11 +19,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
+import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import com.example.medapp.API.Models.PollReport;
 import com.example.medapp.API.Models.QuestionAnswer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import static com.example.medapp.API.PollInitializer.SubmitResponse;
 import static com.example.medapp.ActivitiesController.GetPollId;
@@ -37,9 +41,11 @@ public class End extends AppCompatActivity {
     private TextView dateBirth;
     private String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
     Calendar calendar = Calendar.getInstance();
+    final int[] countS = {0};
+    String birth = "";
+    Date db = new Date(1990,0,1);
 
     int [] dateINT = new int[3];
-    int count =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class End extends AppCompatActivity {
         rg = (RadioGroup) findViewById(R.id.radioGroup);
         dateB = (Button) findViewById(R.id.date);
         dateBirth = (TextView) findViewById(R.id.BirthDay);
-        final int[] count = {0};
+
 
         RadioButton m = new RadioButton(rg.getContext());
         m.setText("Мужской");
@@ -83,16 +89,11 @@ public class End extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DatePicker();
-                count[0]++;
-
             }
         });
 
-        if(count[0] >=1)
-        {
-            String birth = dateINT[2]+"/"+dateINT[1]+"/"+dateINT[0];
-            dateBirth.setText(birth);
-        }
+        //dateBirth.setText(birth);
+
     }
 
     @Override
@@ -278,20 +279,21 @@ public class End extends AppCompatActivity {
 
     }
 
-   private DatePickerDialog DatePicker()
+    private void DatePicker()
    {
 
        final DatePickerDialog date = new DatePickerDialog(End.this, new DatePickerDialog.OnDateSetListener() {
            @Override
            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-               dateINT[0] = year;
-               calendar.set(Calendar.YEAR, year);
-               dateINT[1] = month + 1 ;
-               calendar.set(Calendar.MONTH, month);
-               dateINT[2] = dayOfMonth;
-               calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+               dateINT[1] = month +1;
+               dateINT[2] = year;
+               dateINT[0] = dayOfMonth;
+               birth = dayOfMonth + "/"+dateINT[1]+"/"+year;
+               dateBirth.setText(birth);
            }
        }, 1990, 0,1);
+       date.getWindow();
+
        date.setOnShowListener(new DialogInterface.OnShowListener() {
            @Override
            public void onShow(DialogInterface dialog) {
@@ -300,7 +302,8 @@ public class End extends AppCompatActivity {
            }
        });
        date.show();
-       return date;
+
+       //return date;
    }
 
 }
