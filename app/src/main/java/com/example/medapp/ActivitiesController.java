@@ -26,6 +26,7 @@ import net.rehacktive.waspdb.WaspFactory;
 import net.rehacktive.waspdb.WaspHash;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class ActivitiesController {
@@ -87,7 +88,7 @@ public class ActivitiesController {
         }
     }
 
-    public static void FillActivity(TextView quest, TextView Sect, ScrollView sv, Context context, Button foto, ImageView image)
+    public static void FillActivity(TextView quest, TextView Sect, ScrollView sv, Context context, Button foto)
     {
         Poll poll = GetPoll(context);
 
@@ -95,7 +96,7 @@ public class ActivitiesController {
         int questionIndex = GetQuestionIndex(context);
 
         if(poll.sections[sectionIndex].questions[questionIndex].allowAtachments)
-            FotoButton(foto, image, poll.sections[sectionIndex].questions[questionIndex].allowAtachments);
+            FotoButton(foto, poll.sections[sectionIndex].questions[questionIndex].allowAtachments);
 
         quest.setText(poll.sections[sectionIndex].questions[questionIndex].text);
         Sect.setText(poll.sections[sectionIndex].name);
@@ -117,6 +118,7 @@ public class ActivitiesController {
             rb.setText(options[i].text);
             rb.setTag(options[i].id);
             rb.setId(i+1);
+            rb.setTextSize(24);
             rg.addView(rb);
         }
     }
@@ -131,15 +133,15 @@ public class ActivitiesController {
             CheckBox ch = new CheckBox(ll.getContext());
             ch.setText(option[i].text);
             ch.setTag(option[i].id);
+            ch.setTextSize(24);
             ll.addView(ch);
         }
     }
 
-    private  static  void FotoButton(Button foto,ImageView imageView, Boolean allowAtachments){
+    private  static  void FotoButton(Button foto, Boolean allowAtachments){
         if(allowAtachments)
         {
             foto.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -331,13 +333,19 @@ public class ActivitiesController {
 
     public static String ConverBase64(Bitmap bitmap){
         String base64 = "";
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte [] byteArray = stream.toByteArray();
-        base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+        try{
+            ByteBuffer buffer =ByteBuffer.allocate(bitmap.getRowBytes()*bitmap.getHeight());
+            bitmap.copyPixelsToBuffer(buffer);
+            byte[] data = buffer.array();
+            return base64 = Base64.encodeToString(data, Base64.DEFAULT);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
 
-        return base64;
+        return null;
     }
 
     public static String GetPollId(Context context){
@@ -346,7 +354,6 @@ public class ActivitiesController {
         return pollId;
     }
 
-    //запись и извлечение PollResponse
     public static void WriteReportToDb (final PollReport report, Context context){
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("PollReport");

@@ -5,13 +5,16 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 
 import com.example.medapp.API.Models.PollReport;
@@ -31,6 +34,7 @@ public class End extends AppCompatActivity {
     private Button doNot;
     private RadioGroup rg;
     private Button dateB;
+    private TextView dateBirth;
     private String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
     Calendar calendar = Calendar.getInstance();
 
@@ -45,6 +49,8 @@ public class End extends AppCompatActivity {
         doIt = (Button) findViewById(R.id.Send);
         rg = (RadioGroup) findViewById(R.id.radioGroup);
         dateB = (Button) findViewById(R.id.date);
+        dateBirth = (TextView) findViewById(R.id.BirthDay);
+        final int[] count = {0};
 
         RadioButton m = new RadioButton(rg.getContext());
         m.setText("Мужской");
@@ -70,16 +76,23 @@ public class End extends AppCompatActivity {
 
                 SendToSerever();
 
+
             }
         });
         dateB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePicker();
+                count[0]++;
 
             }
         });
 
+        if(count[0] >=1)
+        {
+            String birth = dateINT[2]+"/"+dateINT[1]+"/"+dateINT[0];
+            dateBirth.setText(birth);
+        }
     }
 
     @Override
@@ -111,6 +124,10 @@ public class End extends AppCompatActivity {
             }
         });
         AlertDialog main = builder.create();
+        Button btn1 = main.getButton(DialogInterface.BUTTON_NEGATIVE);
+        Button btn2 = main.getButton(DialogInterface.BUTTON_POSITIVE);
+        btn1.setBackgroundColor(404040);
+        btn2.setBackgroundColor(404040);
         main.show();
 
     }
@@ -166,7 +183,14 @@ public class End extends AppCompatActivity {
                                     onPause();
                                 }
                             });
-            AlertDialog alertDialog = builder.create();
+
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+                }
+            });
             alertDialog.show();
             return;
         }
@@ -201,7 +225,13 @@ public class End extends AppCompatActivity {
                                             onPause();
                                         }
                                     });
-                    AlertDialog alertDialog = builder.create();
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+                        }
+                    });
                     alertDialog.show();
                     return;
                     //message[0] = e.getMessage();
@@ -235,7 +265,13 @@ public class End extends AppCompatActivity {
                                     onPause();
                                 }
                             });
-            AlertDialog alertDialog = builder.create();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+                }
+            });
             alertDialog.show();
             return;
         }
@@ -244,19 +280,25 @@ public class End extends AppCompatActivity {
 
    private DatePickerDialog DatePicker()
    {
-       //final int [] data = new int[3];
 
-       DatePickerDialog date = new DatePickerDialog(End.this, new DatePickerDialog.OnDateSetListener() {
+       final DatePickerDialog date = new DatePickerDialog(End.this, new DatePickerDialog.OnDateSetListener() {
            @Override
            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-               calendar.set(Calendar.YEAR, year);
                dateINT[0] = year;
-               calendar.set(Calendar.MONTH, month);
+               calendar.set(Calendar.YEAR, year);
                dateINT[1] = month + 1 ;
-               calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+               calendar.set(Calendar.MONTH, month);
                dateINT[2] = dayOfMonth;
+               calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
            }
        }, 1990, 0,1);
+       date.setOnShowListener(new DialogInterface.OnShowListener() {
+           @Override
+           public void onShow(DialogInterface dialog) {
+               date.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+               date.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(Color.DKGRAY);
+           }
+       });
        date.show();
        return date;
    }

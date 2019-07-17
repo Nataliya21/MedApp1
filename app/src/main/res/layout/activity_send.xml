@@ -22,7 +22,7 @@
         android:layout_marginRight="35dp"
         android:text="Здесь будет находиться уникальный номер"
         android:textColor="@android:color/widget_edittext_dark"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="italic"
         android:typeface="normal" />
 

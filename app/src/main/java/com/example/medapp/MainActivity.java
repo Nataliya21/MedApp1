@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 c.setText(poll.name);
                 c.setTag(poll.id);
                 c.setId(i);
+                c.setTextSize(24);
                 rg.addView(c);
                 i++;
             }
@@ -108,7 +110,13 @@ public class MainActivity extends AppCompatActivity {
                                     onPause();
                                 }
                             });
-            AlertDialog alertDialog = builder.create();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+                }
+            });
             alertDialog.show();
             return;
 
@@ -121,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
         Intent intent = new Intent(this, var.class);
         startActivity(intent);
