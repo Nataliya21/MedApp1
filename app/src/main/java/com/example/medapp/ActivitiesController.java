@@ -34,7 +34,7 @@ import java.util.List;
 
 public class ActivitiesController {
 
-    public static void Init(String pollId, String baseUrl, Context context){
+    public static void Init(String pollId, String baseUrl, Context context) throws Exception{
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
 
@@ -151,41 +151,13 @@ public class ActivitiesController {
         }
     }
 
-    private static void WritePollToDb(String pollId, String baseUrl, Context context){
+    private static void WritePollToDb(String pollId, String baseUrl, Context context) throws Exception{
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("Poll");
 
-        final Poll[] poll = {new Poll()};
-
-        final String PollId = pollId;
-        final String BaseUrl = baseUrl;
-
-        Thread tr = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try
-                {
-                    poll[0] = PollInitializer.GetPOll(BaseUrl, PollId);
-                }
-                catch( Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        });
-        tr.start();
-
-        try {
-            tr.join();
-
-            hash.put("Poll", poll[0]);
-
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Poll poll = PollInitializer.GetPOll(baseUrl, pollId);
+        hash.put("Poll", poll);
     }
 
     private static void InitializeIndexes(Context context){
@@ -333,7 +305,7 @@ public class ActivitiesController {
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("Answers");
-        
+
         return new ArrayList<>(hash.<QuestionAnswer>getAllValues());
     }
 

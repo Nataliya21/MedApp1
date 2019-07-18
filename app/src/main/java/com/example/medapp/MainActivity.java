@@ -1,8 +1,11 @@
 package com.example.medapp;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FetchPollsTask mt = new FetchPollsTask();
-        mt.execute();
+        new FetchPollsTask().execute();
     }
 
     class FetchPollsTask extends AsyncTask<Void, Void, ArrayList<PollData>> {
@@ -71,8 +73,17 @@ public class MainActivity extends AppCompatActivity {
                 return PollInitializer.GetPollsData(baseUrl);
             } catch (Exception e){
                 e.printStackTrace();
+                cancel(false);
                 return  null;
             }
+        }
+
+        @Override
+        protected void onCancelled(){
+            super.onCancelled();
+
+            spinner.setVisibility(View.GONE);
+            ConnectionErrorDialog();
         }
 
         @Override
@@ -96,13 +107,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Start();
-            return null;
+            try{
+                Start();
+                return null;
+            } catch (Exception e){
+                e.printStackTrace();
+                this.cancel(false);
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+        }
+
+        protected void onCancelled(){
+            super.onCancelled();
+
+            spinner.setVisibility(View.GONE);
+            ConnectionErrorDialog();
         }
     }
 
@@ -124,47 +148,77 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void Start(){
+    private void Start() throws Exception{
         String id = "";
         int d = -1;
-
         d = rg.getCheckedRadioButtonId();
-        if(d == -1)
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Внимание!")
-                    .setMessage("Вы не выбрали ни одного теста!")
-                    .setCancelable(false).
-                    setNegativeButton("Ок",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                    onPause();
-                                }
-                            });
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
-                }
-            });
-            alertDialog.show();
-            return;
 
+        if(d == -1) {
+            TestNotPickedDialog();
+            return;
         }
+
         RadioButton ch =  findViewById(d);
         id = ch.getTag().toString();
 
-        try {
-            Init(id, baseUrl,this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Init(id, baseUrl,this);
+
 
         Intent intent = new Intent(this, var.class);
         startActivity(intent);
+    }
+
+    private void ConnectionErrorDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Ошибка")
+                .setMessage("Не удалось подключиться к серверу\r\nПопробовать снова?")
+                .setCancelable(false).
+                setNegativeButton("Повторить попытку",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                triggerRebirth(MainActivity.this);
+                            }
+                        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void TestNotPickedDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Внимание!")
+                .setMessage("Вы не выбрали ни одного теста!")
+                .setCancelable(false).
+                setNegativeButton("Ок",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                onPause();
+                            }
+                        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+            }
+        });
+        alertDialog.show();
+    }
+
+    public static void triggerRebirth(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        context.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
  }

@@ -56,9 +56,6 @@ public class var extends AppCompatActivity {
 
     private String currentPhotoPath;
     private String base = "";
-    static final int REQUEST_TAKE_PHOTO = 1;
-
-    private static final int CAMERA_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +171,6 @@ public class var extends AppCompatActivity {
 
         new NextQuestTask(this, options.toArray(new String[options.size()]), base).execute();
     }
-
 
     private void Foto(){
         if (foto.getText().equals("Удалить фото")){
@@ -333,5 +329,4 @@ public class var extends AppCompatActivity {
         context.startActivity(mainIntent);
         Runtime.getRuntime().exit(0);
     }
-
 }

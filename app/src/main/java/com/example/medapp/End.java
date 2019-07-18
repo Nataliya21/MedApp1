@@ -114,13 +114,22 @@ public class End extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            SendToServer();
-            return null;
+
+            try {
+                SendToServer();
+                return null;
+            } catch (Exception e){
+                e.printStackTrace();
+                this.cancel(false);
+                return null;
+            }
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+        protected void onCancelled(){
+            super.onCancelled();
+            spinner.setVisibility(View.GONE);
+            ConnectionErrorDialog();
         }
     }
 
@@ -266,6 +275,36 @@ public class End extends AppCompatActivity {
         });
         main.show();
 
+    }
+
+    private void ConnectionErrorDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(End.this);
+        builder.setTitle("Ошибка")
+                .setMessage("Не удалось подключиться к серверу\r\nПопробовать снова?")
+                .setCancelable(false)
+                .setNegativeButton("Выйти",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                triggerRebirth(End.this);
+                            }
+                        })
+                .setPositiveButton("Повторить попытку",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new SubmitResponseTask().execute();
+                            }
+                        })
+        ;
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+            }
+        });
+        alertDialog.show();
     }
 
     public static void triggerRebirth(Context context) {
