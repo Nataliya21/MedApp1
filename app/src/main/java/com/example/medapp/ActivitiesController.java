@@ -37,13 +37,13 @@ public class ActivitiesController {
     public static void Init(String pollId, String baseUrl, Context context) throws Exception{
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
-
-        for (String h : Db.getAllHashes()){
-            WaspHash hash = Db.openOrCreateHash(h);
-            hash.flush();
+        
+        if (Db.getAllHashes() != null){
+            for (String h : Db.getAllHashes()){
+                WaspHash hash = Db.openOrCreateHash(h);
+                hash.flush();
+            }
         }
-
-        //WaspFactory.destroyDatabase(Db);
 
         WritePollToDb(pollId, baseUrl, context);
         InitializeIndexes(context);
