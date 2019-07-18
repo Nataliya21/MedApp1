@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/Qst"
         android:layout_width="352dp"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/SectId"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -24,7 +24,6 @@
         android:text="   Здесь будет находиться вопрос с выбором ответа."
         android:textColor="@android:color/widget_edittext_dark"
         android:textSize="24sp"
-        android:textStyle="italic"
         android:typeface="normal" />
 
     <Button
@@ -49,6 +48,7 @@
         android:id="@+id/sv"
         android:layout_width="wrap_content"
         android:layout_height="342dp"
+        android:layout_above="@+id/Next"
         android:layout_below="@+id/Qst"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -56,10 +56,10 @@
         android:layout_alignParentRight="true"
         android:layout_marginStart="39dp"
         android:layout_marginLeft="39dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="23dp"
         android:layout_marginRight="23dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="30dp" />
 
     <TextView
         android:id="@+id/SectId"
@@ -77,8 +77,8 @@
         android:layout_marginRight="38dp"
         android:layout_marginBottom="8dp"
         android:text="        Здесь будет находиться название секции"
-        android:textColor="@android:color/widget_edittext_dark"
-        android:textSize="24sp"
+        android:textColor="#524F4F"
+        android:textSize="18sp"
         android:textStyle="italic"
         android:typeface="normal" />
 
@@ -95,9 +95,16 @@
         android:layout_marginBottom="40dp"
         android:background="@color/colorAccent"
         android:text="Добавить фото"
-        android:textColor="@android:color/widget_edittext_dark"
         android:textSize="18sp"
-        android:textStyle="italic"
         android:typeface="normal" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dp" />
 
 </RelativeLayout>

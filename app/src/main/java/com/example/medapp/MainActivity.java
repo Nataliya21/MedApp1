@@ -1,23 +1,19 @@
 package com.example.medapp;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 
-import com.example.medapp.API.Models.Poll;
 import com.example.medapp.API.Models.PollData;
 import com.example.medapp.API.PollInitializer;
 
@@ -27,6 +23,7 @@ import static com.example.medapp.ActivitiesController.Init;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ProgressBar spinner;
     private Button start;
     private ScrollView sv;
     private RadioGroup rg;
@@ -43,60 +40,97 @@ public class MainActivity extends AppCompatActivity {
         start = findViewById(R.id.Start);
         sv = findViewById((R.id.sv));
         rg = findViewById(R.id.rg);
+        spinner = findViewById(R.id.progressBar1);
 
         sv.refreshDrawableState();
         rg.refreshDrawableState();
-        Refresh();
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Start();
+                new StartPollTask().execute();
             }
         });
+
+        FetchPollsTask mt = new FetchPollsTask();
+        mt.execute();
     }
 
-    private void Refresh() {
+    class FetchPollsTask extends AsyncTask<Void, Void, ArrayList<PollData>> {
 
-        Thread thread = new Thread(new Runnable() {
+        @Override
+        protected void onPreExecute() {
+            spinner.setVisibility(View.VISIBLE);
+            start.setVisibility(View.GONE);
+            super.onPreExecute();
+        }
 
-            @Override
-            public void run() {
-                try  {
+        @Override
+        protected ArrayList<PollData> doInBackground(Void... params) {
 
-                    polls = PollInitializer.GetPollsData(baseUrl);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try{
+                return PollInitializer.GetPollsData(baseUrl);
+            } catch (Exception e){
+                e.printStackTrace();
+                return  null;
             }
-        });
+        }
 
-        thread.start();
-
-        try{
-            thread.join();
-            int i =1;
-
-            for(PollData poll: polls){
-                RadioButton c = new RadioButton(this);
-                c.setText(poll.name);
-                c.setTag(poll.id);
-                c.setId(i);
-                c.setTextSize(24);
-                rg.addView(c);
-                i++;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        @Override
+        protected void onPostExecute(ArrayList<PollData> result) {
+            super.onPostExecute(result);
+            Draw(result);
+            spinner.setVisibility(View.GONE);
+            start.setVisibility(View.VISIBLE);
         }
     }
 
+    class StartPollTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            spinner.setVisibility(View.VISIBLE);
+            sv.setVisibility(View.GONE);
+            start.setVisibility(View.GONE);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Start();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+        }
+    }
+
+    private void Draw(ArrayList<PollData> polls){
+        int i =1;
+
+        for(PollData poll: polls){
+            RadioButton c = new RadioButton(this);
+            c.setText(poll.name);
+            c.setTag(poll.id);
+            c.setId(i);
+
+
+            c.setTextSize(30);
+            c.setPadding(0, 35, 0, 35);
+
+            rg.addView(c);
+            i++;
+        }
+    }
+
+
     private void Start(){
-        //передать в бд вопросы и состояния вопросов
         String id = "";
         int d = -1;
+
         d = rg.getCheckedRadioButtonId();
-        if(d==-1)
+        if(d == -1)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Внимание!")

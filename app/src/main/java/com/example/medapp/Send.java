@@ -1,44 +1,41 @@
 package com.example.medapp;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import static com.example.medapp.ActivitiesController.GetUniqNumber;
 
 public class Send extends AppCompatActivity {
 
-    private TextView number;
     private Button share;
+
+    private String uniqueNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
 
-        number = (TextView) findViewById(R.id.Number);
-        share = (Button) findViewById(R.id.Share);
-
-        final String uniq = String.valueOf(GetUniqNumber(Send.this));
         Bundle argument = getIntent().getExtras();
-        String message = argument.get("message").toString();
-        Bundle arg  = getIntent().getExtras();
-        String header = arg.get("header").toString();
 
+        share = findViewById(R.id.Share);
 
-        number.setText(header +"\n" + message + "\n" + uniq);
-//
-        final String num = number.getText().toString();
+        ( (TextView)findViewById(R.id.header) ).setText(argument.get("header").toString());
+        ( (TextView)findViewById(R.id.message) ).setText(argument.get("message").toString());
+        ( (TextView)findViewById(R.id.unique) ).setText(argument.get("unique").toString());
+
+        uniqueNumber = argument.get("unique").toString();
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Share(uniq);
+                Share(uniqueNumber);
             }
         });
     }
@@ -46,7 +43,7 @@ public class Send extends AppCompatActivity {
     private void Share(String uniq){
         Intent shareIntend = new Intent(Intent.ACTION_SEND);
         shareIntend.setType("text/plain");
-        String shareBody = "Уникальный номер моего опроса - " + uniq;
+        String shareBody = "Уникальный номер моего отчета - " + uniq;
         String shareSub ="";
         shareIntend.putExtra(Intent.EXTRA_SUBJECT, shareSub);
         shareIntend.putExtra(Intent.EXTRA_TEXT, shareBody);
@@ -55,12 +52,15 @@ public class Send extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        BackToMain();
+        triggerRebirth(Send.this);
     }
 
-    private void BackToMain(){
-        Intent main = new Intent(Send.this, MainActivity.class);
-        startActivity(main);
+    public static void triggerRebirth(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        context.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
 }

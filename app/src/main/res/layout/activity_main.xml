@@ -5,40 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="376dp"
-        android:layout_height="143dp"
+    <ScrollView
+        android:id="@+id/sv"
+        android:layout_width="353dp"
+        android:layout_height="313dp"
+        android:layout_above="@+id/Start"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="11dp"
-        android:layout_marginRight="11dp"
-        android:text="   Это поможет провести более точный анализ вашей ситуации."
-        android:textColor="@android:color/widget_edittext_dark"
-        android:textSize="24sp"
-        android:textStyle="italic"
-        android:typeface="normal" />
-
-    <ScrollView
-        android:id="@+id/sv"
-        android:layout_width="353dp"
-        android:layout_height="313dp"
-        android:layout_below="@+id/textView4"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="34dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginRight="23dp">
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="50dp">
 
         <RadioGroup
             android:id="@+id/rg"
@@ -61,5 +43,14 @@
         android:background="@color/colorAccent"
         android:text="Начать"
         android:textSize="18sp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dp" />
 
 </RelativeLayout>

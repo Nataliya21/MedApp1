@@ -3,6 +3,7 @@ package com.example.medapp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v7.widget.DividerItemDecoration;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -28,10 +29,11 @@ import net.rehacktive.waspdb.WaspHash;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ActivitiesController {
 
-    // Обязательно вызываем перед тем как начать работать
     public static void Init(String pollId, String baseUrl, Context context){
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
@@ -47,7 +49,6 @@ public class ActivitiesController {
         InitializeIndexes(context);
     }
 
-    // Назначаем на кнопку "Следующий вопрос"
     public static void NextQuestion(Context context, String [] options, String atachment){
 
         Poll poll = GetPoll(context);
@@ -88,15 +89,13 @@ public class ActivitiesController {
         }
     }
 
-    public static void FillActivity(TextView quest, TextView Sect, ScrollView sv, Context context, Button foto)
-    {
+    public static void FillActivity(TextView quest, TextView Sect, ScrollView sv, Context context, Button foto) {
         Poll poll = GetPoll(context);
 
         int sectionIndex = GetSectionIndex(context);
         int questionIndex = GetQuestionIndex(context);
 
-        if(poll.sections[sectionIndex].questions[questionIndex].allowAtachments)
-            FotoButton(foto, poll.sections[sectionIndex].questions[questionIndex].allowAtachments);
+        FotoButton(foto, poll.sections[sectionIndex].questions[questionIndex].allowAtachments);
 
         quest.setText(poll.sections[sectionIndex].questions[questionIndex].text);
         Sect.setText(poll.sections[sectionIndex].name);
@@ -119,6 +118,7 @@ public class ActivitiesController {
             rb.setTag(options[i].id);
             rb.setId(i+1);
             rb.setTextSize(24);
+            rb.setPadding(0, 15, 0, 15);
             rg.addView(rb);
         }
     }
@@ -126,6 +126,7 @@ public class ActivitiesController {
     private static void FillCheckBoxes(Option [] option, ScrollView scrollView){
         LinearLayout ll = new LinearLayout(scrollView.getContext());
         ll.setId(R.id.checkbox);
+        ll.setOrientation(LinearLayout.VERTICAL);
         scrollView.addView(ll);
 
         for(int i = 0; i < option.length; i++)
@@ -134,6 +135,8 @@ public class ActivitiesController {
             ch.setText(option[i].text);
             ch.setTag(option[i].id);
             ch.setTextSize(24);
+            ch.setPadding(0, 15, 0, 15);
+
             ll.addView(ch);
         }
     }
@@ -142,6 +145,9 @@ public class ActivitiesController {
         if(allowAtachments)
         {
             foto.setVisibility(View.VISIBLE);
+        }
+        else{
+            foto.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -328,73 +334,23 @@ public class ActivitiesController {
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("Answers");
 
+        List test = hash.<QuestionAnswer>getAllValues();
+
         return new ArrayList<>(hash.<QuestionAnswer>getAllValues());
     }
 
-    public static String ConverBase64(Bitmap bitmap){
-        String base64 = "";
+    public static String ConvertBase64(Bitmap bitmap){
 
-        try{
-            ByteBuffer buffer =ByteBuffer.allocate(bitmap.getRowBytes()*bitmap.getHeight());
-            bitmap.copyPixelsToBuffer(buffer);
-            byte[] data = buffer.array();
-            return base64 = Base64.encodeToString(data, Base64.DEFAULT);
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 35, baos);
+        byte[] b = baos.toByteArray();
 
-        return null;
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public static String GetPollId(Context context){
         Poll poll = GetPoll(context);
         String pollId = poll.id;
         return pollId;
-    }
-
-    public static void WriteReportToDb (final PollReport report, Context context){
-        WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
-        WaspHash hash = Db.openOrCreateHash("PollReport");
-
-        final PollReport[] result = new PollReport[1];
-
-        Thread tr = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try
-                {
-                    result[0] = report;
-                }
-                catch( Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        });
-        tr.start();
-
-        try {
-            tr.join();
-
-            hash.put("PollReport", result[0]);
-
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static int GetUniqNumber(Context context){
-        WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
-        WaspHash hash = Db.openOrCreateHash("PollReport");
-
-        PollReport result = hash.get("PollReport");
-        int number;
-        number = result.uniqueNumber;
-
-        return number;
     }
 }

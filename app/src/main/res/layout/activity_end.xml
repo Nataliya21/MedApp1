@@ -6,9 +6,48 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/End"
+        android:id="@+id/msg"
         android:layout_width="wrap_content"
-        android:layout_height="222dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="97dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginRight="21dp"
+        android:gravity="center|center_vertical"
+        android:text='Спасибо, теперь необходимо отправить отчет о Вашем состоянии лечащему врачу'
+        android:textColor="@android:color/widget_edittext_dark"
+        android:textSize="24sp"
+        android:typeface="normal" />
+
+    <TextView
+        android:id="@+id/gen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="199dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:text="Пол:"
+        android:textColor="@android:color/widget_edittext_dark"
+        android:textSize="24sp"
+        android:typeface="normal" />
+
+    <TextView
+        android:id="@+id/head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -19,14 +58,15 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="13dp"
         android:layout_marginRight="13dp"
-        android:text='   Поздравляем! Вы успешно прошли тестирование! Отправьте результаты вашей проверки на сервер, для того чтобы врач ознакомился с ними. Для этого нажмите кнопку "Отправить результаты".'
+        android:gravity="center|center_vertical"
+        android:text="Отправка отчета"
         android:textColor="@android:color/widget_edittext_dark"
-        android:textSize="24sp"
+        android:textSize="36sp"
         android:textStyle="italic"
         android:typeface="normal" />
 
     <Button
-        android:id="@+id/Send"
+        android:id="@+id/EndB"
         android:layout_width="154dp"
         android:layout_height="53dp"
         android:layout_alignParentStart="true"
@@ -36,25 +76,25 @@
         android:layout_marginLeft="34dp"
         android:layout_marginBottom="68dp"
         android:background="@color/colorAccent"
-        android:text="Отправить результаты"
+        android:text="Не отправлять"
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/EndB"
+        android:id="@+id/Send"
         android:layout_width="159dp"
         android:layout_height="53dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginEnd="26dp"
         android:layout_marginRight="26dp"
-        android:layout_marginBottom="64dp"
-        android:layout_toEndOf="@+id/Send"
-        android:layout_toRightOf="@+id/Send"
+        android:layout_marginBottom="68dp"
+        android:layout_toEndOf="@+id/EndB"
+        android:layout_toRightOf="@+id/EndB"
         android:background="@color/colorAccent"
-        android:text="Не отпралять"
+        android:text="Отправить отчет"
         android:textSize="18sp"
         android:typeface="normal" />
 
@@ -62,53 +102,47 @@
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="84dp"
-        android:layout_below="@+id/End"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="42dp"
-        android:layout_marginLeft="41dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="43dp"
-        android:layout_marginRight="43dp" />
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="249dp" />
 
     <Button
         android:id="@+id/date"
-        android:layout_width="193dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/BirthDay"
+        android:layout_width="154dp"
+        android:layout_height="53dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="33dp"
-        android:layout_marginLeft="33dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="184dp"
-        android:layout_marginRight="184dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="34dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginBottom="154dp"
         android:background="@color/colorAccent"
         android:text="Выбрать дату рождения"
-        android:textSize="18sp"
-        android:typeface="normal" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/BirthDay"
         android:layout_width="296dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/radioGroup"
+        android:layout_above="@+id/date"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="71dp"
-        android:layout_marginRight="71dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginBottom="10dp"
         android:textSize="24sp"
         android:textStyle="italic"
         android:typeface="normal"
         app:fontFamily="@font/yrsa_light" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dp" />
 
 </RelativeLayout>

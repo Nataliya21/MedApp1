@@ -1,28 +1,45 @@
 package com.example.medapp;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-import static com.example.medapp.ActivitiesController.ConverBase64;
+import static com.example.medapp.ActivitiesController.ConvertBase64;
 import static com.example.medapp.ActivitiesController.FillActivity;
 import static com.example.medapp.ActivitiesController.NextQuestion;
 
@@ -32,8 +49,13 @@ public class var extends AppCompatActivity {
     private ScrollView sv;
     private TextView sect;
     private Button next;
-    private  Button foto;
-    String base = "";
+    private Button foto;
+    private ProgressBar spinner;
+
+    private String currentPhotoPath;
+    private String base = "";
+    static final int REQUEST_TAKE_PHOTO = 1;
+
     private static final int CAMERA_REQUEST = 0;
 
     @Override
@@ -41,17 +63,16 @@ public class var extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_var);
 
-        qst = (TextView) findViewById(R.id.Qst);
-        sect = (TextView) findViewById(R.id.SectId);
-        sv = (ScrollView) findViewById(R.id.sv);
-        foto = (Button) findViewById(R.id.foto);
+        qst = findViewById(R.id.Qst);
+        sect = findViewById(R.id.SectId);
+        sv = findViewById(R.id.sv);
+        foto = findViewById(R.id.foto);
+        spinner = findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.INVISIBLE);
 
-        foto.setVisibility(View.INVISIBLE);
+        FillActivity(qst, sect, sv,this, foto);
 
-        //показ вопроса
-        FillActivity(qst,sect,sv, this,foto);
-
-        next = (Button) findViewById(R.id.Next);
+        next = findViewById(R.id.Next);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,18 +83,52 @@ public class var extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Foto();
-                foto.setText("Удалить картинку");
             }
         });
+    }
 
+    class NextQuestTask extends AsyncTask<Void, Void, Void> {
+
+        public Context context;
+        public String [] options;
+        public String base;
+
+        public NextQuestTask(Context Context, String [] Options, String Base){
+            context = Context;
+            options = Options;
+            base = Base;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            spinner.setVisibility(View.VISIBLE);
+
+            sv.setVisibility(View.INVISIBLE);
+            qst.setVisibility(View.INVISIBLE);
+
+            sect.setVisibility(View.INVISIBLE);
+            foto.setVisibility(View.INVISIBLE);
+            next.setVisibility(View.INVISIBLE);
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            NextQuestion(context, options, base);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+        }
     }
 
     private void  Next(){
-
         ViewGroup viewGroup = (ViewGroup) sv.getChildAt(0);
 
         ArrayList<String> options = new ArrayList<>();
-
 
         if (viewGroup.getId() == R.id.checkbox){
             LinearLayout ll = (LinearLayout) viewGroup;
@@ -87,11 +142,12 @@ public class var extends AppCompatActivity {
             RadioGroup rg = (RadioGroup) viewGroup;
 
             RadioButton rb = findViewById(rg.getCheckedRadioButtonId());
-            options.add(rb.getTag().toString());
-
+            if (rb != null){
+                options.add(rb.getTag().toString());
+            }
         }
 
-        if (options.size() == 0){
+        if (options.isEmpty()){
             AlertDialog.Builder builder = new AlertDialog.Builder(var.this);
             builder.setTitle("Внимание!")
                     .setMessage("Вы не выбрали ни одного варианта ответа!")
@@ -114,32 +170,69 @@ public class var extends AppCompatActivity {
             return;
         }
 
-        NextQuestion(this, options.toArray(new String[options.size()]), base);
-
+        new NextQuestTask(this, options.toArray(new String[options.size()]), base).execute();
     }
 
-    private void Foto(){
-        //открыть камеру и передать фото в imageView
-        Intent camera = new Intent();
-        camera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(camera, CAMERA_REQUEST);
 
+    private void Foto(){
+        if (foto.getText().equals("Удалить фото")){
+            base = "";
+            foto.setText("Добавить фото");
+        } else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (photoFile != null) {
+
+                    Uri photoURI;
+
+                    if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT))
+                        photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", photoFile);
+                    else
+                        photoURI = Uri.fromFile(photoFile);
+
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, 1);
+                }
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            // Фотка сделана, извлекаем картинку
-            Bitmap thumbnailBitmap = (Bitmap) data.getExtras().get("data");
-            base = ConverBase64(thumbnailBitmap);
-            //image.setImageBitmap(thumbnailBitmap);
+
+        if (requestCode == 1) {
+            File imgFile = new  File(currentPhotoPath);
+            if(imgFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                base = ConvertBase64(bitmap);
+                foto.setText("Удалить фото");
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         BackToMain();
     }
 
@@ -153,9 +246,7 @@ public class var extends AppCompatActivity {
         builder.setPositiveButton("Продолжить", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent main = new Intent(var.this, MainActivity.class);
-                startActivity(main);
-                //метод обнуления индексов
+                triggerRebirth(var.this);
             }
         });
         builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -176,6 +267,15 @@ public class var extends AppCompatActivity {
         });
         main.show();
 
+    }
+
+    public static void triggerRebirth(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        context.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
 
 }
