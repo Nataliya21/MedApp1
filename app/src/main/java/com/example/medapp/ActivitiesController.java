@@ -333,16 +333,14 @@ public class ActivitiesController {
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
         WaspHash hash = Db.openOrCreateHash("Answers");
-
-        List test = hash.<QuestionAnswer>getAllValues();
-
+        
         return new ArrayList<>(hash.<QuestionAnswer>getAllValues());
     }
 
     public static String ConvertBase64(Bitmap bitmap){
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 35, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] b = baos.toByteArray();
 
         return Base64.encodeToString(b, Base64.DEFAULT);

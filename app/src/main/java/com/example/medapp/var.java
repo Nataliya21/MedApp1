@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -224,11 +226,65 @@ public class var extends AppCompatActivity {
         if (requestCode == 1) {
             File imgFile = new  File(currentPhotoPath);
             if(imgFile.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                base = ConvertBase64(bitmap);
+                Bitmap originalBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+                int height = 0;
+                int width = 0;
+
+                if (originalBitmap.getHeight() > 480){
+                    height = 480;
+                    double coeff = 480.0 / (double) originalBitmap.getHeight();
+                    width = (int)(originalBitmap.getWidth() * coeff);
+                } else {
+                    height = originalBitmap.getHeight();
+                    width = originalBitmap.getWidth();
+                }
+
+                ExifInterface exif;
+
+                try{
+                    exif = new ExifInterface(imgFile.getAbsolutePath());
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return;
+                }
+
+                int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                int rotationInDegrees = exifToDegrees(rotation);
+
+                Matrix matrix = new Matrix();
+                if (rotation != 0) {matrix.preRotate(rotationInDegrees);}
+
+
+                Bitmap adjustedBitmap = Bitmap.createBitmap(
+                    originalBitmap,
+                    0,
+                    0,
+                    originalBitmap.getWidth(),
+                    originalBitmap.getHeight(),
+                    matrix,
+                    false
+                );
+
+                Bitmap scaledBitmap;
+
+                if (rotation == 0){
+                    scaledBitmap = Bitmap.createScaledBitmap(adjustedBitmap, width, height, false);
+                } else {
+                    scaledBitmap = Bitmap.createScaledBitmap(adjustedBitmap, height, width, false);
+                }
+
+                base = ConvertBase64(scaledBitmap);
                 foto.setText("Удалить фото");
             }
         }
+    }
+
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
     }
 
     @Override
