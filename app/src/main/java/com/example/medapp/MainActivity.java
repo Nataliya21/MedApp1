@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Button start;
     private ScrollView sv;
     private RadioGroup rg;
-    String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
+    String baseUrl = "http://pat2doc.ru/";
 
     private ArrayList<PollData> polls;
 

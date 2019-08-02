@@ -37,7 +37,7 @@ public class ActivitiesController {
     public static void Init(String pollId, String baseUrl, Context context) throws Exception{
 
         WaspDb Db = WaspFactory.openOrCreateDatabase(context.getFilesDir().getPath(), "MedDB", "pass");
-        
+
         if (Db.getAllHashes() != null){
             for (String h : Db.getAllHashes()){
                 WaspHash hash = Db.openOrCreateHash(h);

@@ -38,7 +38,7 @@ public class End extends AppCompatActivity {
     private TextView dateBirth;
     private ProgressBar spinner;
 
-    private String baseUrl = "http://andrevvantonovv-001-site1.etempurl.com";
+    private String baseUrl = "http://pat2doc.ru/";
 
     int BirthDay = 1;
     int BirthMonth = 1;
